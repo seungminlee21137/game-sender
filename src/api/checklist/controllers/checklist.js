@@ -3,8 +3,8 @@
 const { tunnelSSH } = require("../../../../utils/connet-helper");
 const sshconfig = {
   host: "10.100.2.4",
-  username: "happytuk",
-  password: "happytuk5377!",
+  username: process.env.ssh_username, // env.username
+  password: process.env.ssh_password, //env.password
 };
 
 module.exports = {
