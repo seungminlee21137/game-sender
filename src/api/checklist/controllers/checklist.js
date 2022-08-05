@@ -1,6 +1,6 @@
 "use strict";
 
-const { tunnelSSH } = require("../../../../utils/connet-helper");
+const { tunnelSSH } = require("../../../../utils/connect-helper");
 const sshconfig = {
   host: "10.100.2.4",
   username: process.env.ssh_username, // env.username
