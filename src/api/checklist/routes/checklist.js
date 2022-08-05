@@ -20,5 +20,14 @@ module.exports = {
         middlewares: [],
       },
     },
+    {
+      method: "GET",
+      path: "/checklist/logtail/:ip",
+      handler: "checklist.serverlogTail",
+      config: {
+        policies: [],
+        middlewares: [],
+      },
+    },
   ],
 };
