@@ -11,10 +11,12 @@ const sshconfig = {
   host: "10.100.2.4",
   username: process.env.ssh_username, // env.username
   password: process.env.ssh_password, //env.password
+  readyTimeout: 10000, // default: 20000
 };
 
 module.exports = {
   /**
+   * jcgf, happycode 공통 사용
    * 요청서버의 war 정보를 가져온다.
    * -rw-rw-r--. 1 happytuk 52277210 2022-08-11 16:29 /usr/local/tomcat7/webapps/ROOT.war
    *
@@ -31,12 +33,15 @@ module.exports = {
 
     const _server = await tunnelSSH(sshconfig);
 
+    // 임시경로: /home/happytuk/target/
+    // 이동경로: /usr/local/tomcat7/webapps/
     if (_server) {
       const commands = await _server.exec(
         "ls /usr/local/tomcat7/webapps/ROOT.war --time-style=long-iso -lrg"
       );
 
       const command = commands.split(" ");
+
       result.ip = serverip;
       result.size = command[3];
       result.releaseDate = `${command[4]} ${command[5]}`;
@@ -84,7 +89,7 @@ module.exports = {
 
       if (_server) {
         const commands = await _server.exec(
-          "ls /usr/local/tomcat7/webapps/ROOT.war --time-style=long-iso -lrg"
+          "ls /home/happytuk/target/ROOT.war --time-style=long-iso -lrg"
         );
 
         const command = commands.split(" ");
