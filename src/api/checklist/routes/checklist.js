@@ -4,7 +4,7 @@ module.exports = {
   routes: [
     {
       method: "GET",
-      path: "/checklist/war/:serverip",
+      path: "/checklist/war/:serverip/:targetdir",
       handler: "checklist.warcheck",
       config: {
         policies: [],
