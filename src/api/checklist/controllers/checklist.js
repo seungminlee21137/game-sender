@@ -11,7 +11,7 @@ const sshconfig = {
   host: "10.100.2.4",
   username: process.env.ssh_username, // env.username
   password: process.env.ssh_password, //env.password
-  readyTimeout: 10000, // default: 20000
+  readyTimeout: 20000, // default: 20000
 };
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
    *
    */
   async warcheck(ctx) {
-    const { serverip = "" } = ctx.params;
+    const { serverip = "", targetdir = "webapps" } = ctx.params;
 
     if (!serverip) {
       return { ip: "" };
@@ -32,21 +32,33 @@ module.exports = {
     const result = {};
 
     const _server = await tunnelSSH(sshconfig);
+    let _directory =
+      targetdir === "webapps"
+        ? "/usr/local/tomcat7/webapps/"
+        : "/home/happytuk/target/";
 
     // 임시경로: /home/happytuk/target/
     // 이동경로: /usr/local/tomcat7/webapps/
+    // console.log(`server-target:::[${targetdir}][${_directory}/ROOT.war]`);
+
     if (_server) {
-      const commands = await _server.exec(
-        "ls /usr/local/tomcat7/webapps/ROOT.war --time-style=long-iso -lrg"
-      );
+      try {
+        const commands = await _server.exec(
+          `ls ${_directory}/ROOT.war --time-style=long-iso -lrg`
+        );
 
-      const command = commands.split(" ");
+        const command = commands.split(" ");
 
-      result.ip = serverip;
-      result.size = command[3];
-      result.releaseDate = `${command[4]} ${command[5]}`;
+        result.ip = serverip;
+        result.size = command[3];
+        result.releaseDate = `${command[4]} ${command[5]}`;
 
-      _server.close();
+        _server.close();
+      } catch (err) {
+        result.ip = serverip;
+        result.size = "not found";
+        result.releaseDate = `-`;
+      }
     }
 
     return result;
